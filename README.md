@@ -15,7 +15,6 @@ in a device,enabling exploitation.
 
 ## Timeline
 
-> [!NOTE] 
-> [Markwhen](https://markwhen.com/) required to view timeline.
+> [!NOTE] [Markwhen](https://markwhen.com/) required to view timeline.
 
 See [timeline.mw](timeline.mw).
