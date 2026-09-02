@@ -194,9 +194,6 @@ _minted*
 *.data.minted
 *.pyg
 
-# morewrites
-*.mw
-
 # newpax
 *.newpax
 
