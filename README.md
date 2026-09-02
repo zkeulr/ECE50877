@@ -18,13 +18,4 @@ in a device,enabling exploitation.
 > [!NOTE] 
 > [Markwhen](https://markwhen.com/) required to view timeline.
 
-2026-09-03 / 2026-09-11: 
-- [] Project Proposal
-2026-09-12 / 2026-09-25: 
-- [] Literature Review
-2026-09-25 / 2026-10-09: 
-- [] Research Plan
-2026-10-09 / 2026-12-07:
-- [] Project Presentation
-2026-12-07 / 2026-12-11:
-- [] Final Report
+See [timeline.mw](timeline.mw).
