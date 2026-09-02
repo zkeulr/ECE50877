@@ -1,0 +1,3 @@
+[submodule "presentation/beamer-purdue"]
+	path = presentation/beamer-purdue
+	url = git@github.com:dennisog/beamer-purdue.git
