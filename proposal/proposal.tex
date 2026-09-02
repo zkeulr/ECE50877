@@ -23,25 +23,42 @@ Cryptography Project Proposals}
 % Even though Dr. Ghodsi said she would approve this if we 
 % submitted a proposal, I'm unsure if there's enough novel 
 % content for a paper. The research space is saturated and 
-% Nmap already has version detection. It might be an interesting 
+% Nmap already has version detection. It might yet be an interesting 
 % exercise in side-channel analysis and we could see if 
 % software/hardware fingerprinting is a practical application
-% of machine learning, but I'm very open to other projects. 
+% of machine learning. 
 
 \section{Differential Timing Analysis for 
 Cryptographic Library Fingerprinting}
 
-This project proposal originates
-with Dr. Zahra Ghodsi of Purdue University. 
+This proposal originates with Dr. Zahra Ghodsi of Purdue University. 
 
 \paragraph{Title:} Differential Timing Analysis for Cryptographic Library Fingerprinting
 
-\paragraph{Problem Definition:} The starting step of exploitation is 
-determining the target's technology stack. 
+\paragraph{Problem Definition:} The starting step of exploitation is
+determining the target's technology stack. An important part of
+this process is identifying the cryptographic libraries and
+implementations running on the target. Existing tools can often
+identify software through explicit version information or protocol
+behavior, but such information may be unavailable or intentionally
+hidden. This motivates the following research question:
+Can differential timing analysis identify the cryptographic library
+and version used by a remote target, despite network and system
+noise?
 
-\paragraph{Proposed Methodology:}
+\paragraph{Proposed Methodology:} We will construct a testbed
+containing multiple implementations and versions of commonly used
+cryptographic libraries. We will first collect
+timing measurements while each implementation performs a controlled
+suite of cryptographic operations under different inputs and
+configurations. We will analyze the resulting timing distributions
+to identify features that distinguish implementations.
+We will then train and evaluate statistical and machine-learning
+classifiers using these timing features.
 
-\paragraph{Expected Findings:} We expect to develop a 
+\paragraph{Expected Findings:} We expect to develop a viable 
+method of determining cryptographic library and version on 
+targets based on timing analysis. 
 
 
 \end{document}
