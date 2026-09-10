@@ -6,13 +6,13 @@
 Cryptography Project Proposals}
 
 \author{
-    {\rm Your N.\ Here}\\
+    {\rm Aayuman Ghangurde}\\
     Purdue University
     \and
-    {\rm Second Name}\\
+    {\rm Sai Palaparthi}\\
     Purdue University
     \and
-    {\rm Third Name}\\
+    {\rm Rakib Ahsa}\\
     Purdue University
     \and
     {\rm Zeke Ulrich}\\
@@ -23,78 +23,51 @@ Cryptography Project Proposals}
 
 \maketitle
 
-\section{Improving the Security Model of Desktop Linux 
-Through Isolation of Users and Applications}
+\section{TPM for Linux Authentication}
 
-This proposal originates with the authors of 
-\href{https://privsec.dev/}{privsec.dev} and is 
-paraphrased from their article on 
-\href{https://privsec.dev/posts/linux/linux-insecurities/}{insecurities in Linux}.
+% This proposal originates with the authors of 
+% \href{https://privsec.dev/}{privsec.dev} and is 
+% paraphrased from their article on 
+% \href{https://privsec.dev/posts/linux/linux-insecurities/}{insecurities in Linux}.
 
-\paragraph{Title:} Improving the Security Model of Desktop Linux 
-Through Isolation of Users and Applications 
+\paragraph{Title:} TPM for Linux Authentication 
 
-\paragraph{Problem Definition:} Operating systems like Android and 
-ChromeOS have full system mandatory access control; that is, every 
-process from the init process is strictly confined. Regardless of 
-which application you install or how you install them, they have to 
-play by the rules of an untrusted SELinux domain and are only able 
-to utilize unprivileged APIs.
+\paragraph{Problem Definition:} Operating systems like Android, iOS, macOS, and Windows
+use of a hardware security module for many functions, such as secure credential storage,
+biometric unlock, and verified / measured boot.
 
-On Linux, it is quite the opposite. Out of the box, most 
-systems only have a few system daemons confined. Some Linux 
-distributions don't even have a Mandatory Access Control system 
-at all. Applications are designed in an environment where they 
-expect to be able to do whatever they want, and the app 
-sandboxes/mandatory access control system are merely an 
-afterthought trying to restrict an app to only access what it 
-expects to be accessible.
+On Linux, it is rather the opposite. Out of the box, most 
+systems only have at best secure boot enabled (with a shim),
+and perhaps somes user applications store keys in the TPM (a 
+hardware security module available on most modern x86 systems). On some
+configured systems, keys are stored in the TPM to unlock an encrypted disk.
 
-To make matters worse, some system daemons are not designed 
-with permission control in mind at all. For example, 
-PulseAudio does not have any concept of audio in or out 
-permission. Thus, the user is often left with only the choice 
-of granting an app access to the socket or not. If they want 
-to block microphone access, they have to block access to the 
-socket, and thus break audio playback in the process. If they 
-do want an audio playback, then they have to allow access to the 
-PulseAudio socket, which in turns give an app unrestricted access 
-to record them at any moment.
+While apps on linux can store credentials on the TPM, this is typically
+of limited utility, as they tend not to involve user-authentication.
+The situtation on other operating systems is different. On iOS, apps can
+easily store credentials in the system store, which users can unlock securely
+using biometrics. For example, on Windows, password managers can securely stash
+a long and complex master password (used to first unlock the password database)
+into a system store - then allowing users to unlock the password database using
+biometric credentials later.
 
-The only way to systematically fix this problem is to design a 
-whole new system from scratch with a permission model like that of 
-Android in mind. And even when that happens, it will take 
-substantial work to get developers to develop their apps for said 
-system.
 
-\paragraph{Proposed Methodology:} We will evaluate isolation
-primitives available on modern Linux distributions and measure how
-effectively they can be composed into an Android-style permission
-model without a full OS rewrite. First, we will inventory the
-kernel and userspace mechanisms available for confinement: Linux
-namespaces (user, mount, network, PID), cgroups v2 for resource
-control, seccomp-bpf for syscall filtering, and the existing
-mandatory access control frameworks (SELinux, AppArmor). Second, we
-will build a reference sandbox for a small set of representative
-desktop applications (a web browser, a video conferencing client,
-and a PDF viewer) using a bubblewrap/Flatpak-style unprivileged
-namespace sandbox combined with a portal layer that mediates access
-to resources such as the filesystem, camera, and audio devices,
-modeled on the xdg-desktop-portal approach. Third, to address the
-PulseAudio permission gap described above, we will implement a
-proxy layer between applications and the audio server that exposes
-separate, individually revocable capabilities for playback and
-capture, rather than a single all-or-nothing socket grant. Fourth,
-we will define a threat model consisting of a malicious or
-compromised application attempting privilege escalation, unauthorized
-device access, and cross-application data exfiltration, and we will
-test our sandboxed applications against this threat model using a
-combination of manual penetration testing and automated fuzzing of
-the portal interfaces. Finally, we will benchmark the performance
-and compatibility overhead (application startup time, IPC latency,
-and the number of application features that break under
-confinement) introduced by the sandbox to assess practical
-deployability.
+These facilties require a trusted operating system, for which many solutions exist.
+
+
+
+\paragraph{Proposed Methodology:} We will evaluate the use of hardware
+security modules on other mainstream operating systems, and primarily
+on Windows the TPM, as it most cleanly maps to a linux solution.
+
+We will then investigate the authentication facilities on linux, and determine
+if a TPM-based solution can fit within the constraints of those facilities, or
+whether a new userspace API is required.
+
+We will then investigate the inteface provided by modern TPMs, and define a
+model 
+
+
 
 \paragraph{Expected Findings:} We expect that namespaces, seccomp,
 and a portal-mediated permission layer can approximate a meaningful
