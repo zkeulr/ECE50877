@@ -70,13 +70,16 @@ model
 
 
 \paragraph{Expected Findings:} We expect that namespaces, seccomp,
-and a portal-mediated permission layer can approximate a meaningful
+and a portal-mediated permission layer can approximate a relevant
 subset of the Android permission model on existing Linux
 distributions without requiring a new kernel or init system, though
 with measurable gaps compared to a system designed for confinement
 from the ground up. We anticipate that unmodified applications will
 require the most compatibility work around filesystem access
-patterns and legacy IPC mechanisms such as D-Bus and PulseAudio. 
+patterns and legacy IPC mechanisms such as D-Bus and PulseAudio.
+We also expect legacy privilege escalation systems and the lack of
+secure, unprivileged user namespaces to require additional work.
+
 
 % Even though Dr. Ghodsi said she would approve this if we 
 % submitted a proposal, I'm unsure if there's enough novel 
