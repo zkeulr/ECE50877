@@ -21,9 +21,26 @@ Cryptography Project Proposals}
 
 \begin{document}
 
-\maketitle
+\begin{titlepage} 
+\centering 
+\vspace*{\fill} 
+{\Large\bfseries ECE 50877 \\ Introduction to Applied Cryptography\\[0.5em] 
+Project Proposals\par} 
+\vspace{2cm} 
+{\large Aayuman Ghangurde\\ Purdue University \par} \vspace{0.8cm} 
+{\large Sai Palaparthi\\ Purdue University \par} \vspace{0.8cm} 
+{\large Rakib Ahsan\\ Purdue University \par} \vspace{0.8cm} 
+{\large Zeke Ulrich\\ Purdue University \par} 
+\vspace{2.5cm} 
 
-\section{TPM for Linux Authentication}
+{\large September 11, 2026\par}
+
+\vspace*{\fill} 
+
+\end{titlepage}
+\newpage
+
+\section*{Proposal 1}
 
 % This proposal originates with the authors of 
 % \href{https://privsec.dev/}{privsec.dev} and is 
@@ -56,25 +73,15 @@ These facilities require a trusted operating system, for which many solutions ex
 
 
 
-\paragraph{Proposed Methodology:} We will evaluate the use of hardware
-security modules on other mainstream operating systems, and primarily
-on Windows, the TPM, as it most cleanly maps to a Linux solution.
+\paragraph{Proposed Methodology:} 
+\begin{itemize}
+    \item We will evaluate the use of hardware security modules on other mainstream operating systems, and primarily on Windows, the TPM, as it most cleanly maps to a Linux solution.
+    \item We will identify current shortcomings and enumerate some attacks against the out-of-the-box Linux experience
+    \item We will then investigate the authentication facilities on Linux, and determine if a TPM-based solution can fit within the constraints of those facilities, or whether a new userspace API is required.
+    \item We will then investigate the interface provided by modern TPMs, and define an interface between the TPM and a userspace API. Then we will implement both pieces. We deliberately do not attempt to solve every bug in this implementation, and instead plan to produce a proof of concept.
+    \item We will then test the previously enumerated attacks against the new implementation.
 
-We will identify current shortcomings and enumerate some attacks against
-the out-of-the-box Linux experience
-
-We will then investigate the authentication facilities on Linux, and determine
-if a TPM-based solution can fit within the constraints of those facilities, or
-whether a new userspace API is required.
-
-We will then investigate the interface provided by modern TPMs, and define an interface
-between the TPM and a userspace API. Then, both pieces will be implemented. We deliberately
-do not attempt to solve every bug in this implementation, and instead plan to produce
-a proof of concept.
-
-We will then test the previously enumerated attacks against the new implementation.
-
-
+\end{itemize}
 
 \paragraph{Expected Findings:} We hope to document how other mainstream operating
 systems manage user authentication and secrets. We believe that by securing 
@@ -91,8 +98,9 @@ to store secrets and run-time.
 % software/hardware fingerprinting is a practical application
 % of machine learning. 
 
-\section{Differential Timing Analysis for 
-Cryptographic Library Fingerprinting}
+\newpage
+
+\section*{Proposal 2}
 
 This proposal originates with Dr. Zahra Ghodsi of Purdue University. 
 
@@ -109,15 +117,13 @@ Can differential timing analysis identify the cryptographic library
 and version used by a remote target, despite network and system
 noise?
 
-\paragraph{Proposed Methodology:} We will construct a testbed
-containing multiple implementations and versions of commonly used
-cryptographic libraries. We will first collect
-timing measurements while each implementation performs a controlled
-suite of cryptographic operations under different inputs and
-configurations. We will analyze the resulting timing distributions
-to identify features that distinguish implementations.
-We will then train and evaluate statistical and machine-learning
-classifiers using these timing features.
+\paragraph{Proposed Methodology:} 
+\begin{itemize}
+    \item We will construct a testbed containing multiple implementations and versions of commonly used cryptographic libraries. 
+    \item We will first collect timing measurements while each implementation performs a controlled suite of cryptographic operations under different inputs and configurations. 
+    \item We will analyze the resulting timing distributions to identify features that distinguish implementations.
+    \item We will then train and evaluate statistical and machine-learning classifiers using these timing features.
+\end{itemize}
 
 \paragraph{Expected Findings:} We expect the number of samples 
 required to train accurate classifiers to rise substantially with noise. We also expect machine learning classifiers to outperform statistical classifiers, indicating broader applicability of machine learning techniques to side-channel analysis.   
