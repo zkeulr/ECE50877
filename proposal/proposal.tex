@@ -60,25 +60,27 @@ These facilties require a trusted operating system, for which many solutions exi
 security modules on other mainstream operating systems, and primarily
 on Windows the TPM, as it most cleanly maps to a linux solution.
 
+We will identify current shortcomings and enumerate some attacks against
+the out-of-box linux experience
+
 We will then investigate the authentication facilities on linux, and determine
 if a TPM-based solution can fit within the constraints of those facilities, or
 whether a new userspace API is required.
 
-We will then investigate the inteface provided by modern TPMs, and define a
-model 
+We will then investigate the inteface provided by modern TPMs, and define an interface
+between the TPM and a userspace API. Then, both pieces will be implemented. We deliberately
+do not attempt to solve every bug in this implementation, and instead plan to produce
+a proof of concept.
+
+We will then test the previously enumerated attacks against the new implementation.
 
 
 
-\paragraph{Expected Findings:} We expect that namespaces, seccomp,
-and a portal-mediated permission layer can approximate a relevant
-subset of the Android permission model on existing Linux
-distributions without requiring a new kernel or init system, though
-with measurable gaps compared to a system designed for confinement
-from the ground up. We anticipate that unmodified applications will
-require the most compatibility work around filesystem access
-patterns and legacy IPC mechanisms such as D-Bus and PulseAudio.
-We also expect legacy privilege escalation systems and the lack of
-secure, unprivileged user namespaces to require additional work.
+\paragraph{Expected Findings:} We hope to document how other mainstream operating
+systems manage user authentication and secrets. We believe that by securing 
+keys in a hardware security module, we will be able to defend against certain attacks
+without drastically impacting the user experience, and unlock a new avenue for user applications
+to store secrets and run-time.
 
 
 % Even though Dr. Ghodsi said she would approve this if we 
