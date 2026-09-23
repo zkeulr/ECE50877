@@ -49,29 +49,12 @@ Project Proposals\par}
 
 \paragraph{Title:} TPM for Linux Authentication 
 
-\paragraph{Problem Definition:} Operating systems like Android, iOS, macOS, and Windows
-use a hardware security module for many functions, such as secure credential storage,
-biometric unlock, and verified/measured boot.
+\paragraph{Problem Definition:} 
 
-On Linux, it is rather the opposite. Out of the box, most 
-systems only have at best secure boot enabled (with a shim),
-and perhaps some user applications store keys in the TPM (a 
-hardware security module available on most modern x86 systems). On some
-configured systems, keys are stored in the TPM to unlock an encrypted disk.
+Linux does not have a provider for TPMs.
 
-While apps on Linux can store credentials on the TPM, this is typically
-of limited utility, as they tend not to involve user authentication.
-The situation on other operating systems is different. On iOS, apps can
-easily store credentials in the system store, which users can unlock securely
-using biometrics. For example, on Windows, password managers can securely stash
-a long and complex master password (used to first unlock the password database)
-into a system store, then allowing users to unlock the password database using
-biometric credentials later.
-
-
-These facilities require a trusted operating system, for which many solutions exist.
-
-
+We want to provide a way to unlock a 
+master password via PIN. 
 
 \paragraph{Proposed Methodology:} 
 \begin{itemize}
