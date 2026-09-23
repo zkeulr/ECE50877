@@ -49,28 +49,71 @@ Project Proposals\par}
 
 \paragraph{Title:} TPM for Linux Authentication 
 
-\paragraph{Problem Definition:} 
+\paragraph{Problem Definition:} Operating systems like Android, iOS, macOS, and Windows
+use a hardware security module for many functions, such as secure credential storage,
+biometric unlock, and verified/measured boot.
 
-Linux does not have a provider for TPMs.
+On Linux, it is rather the opposite. Out of the box, most 
+systems only have at best secure boot enabled (with a shim),
+and perhaps some user applications store keys in the TPM (a 
+hardware security module available on most modern x86 systems). On some
+configured systems, keys are stored in the TPM to unlock an encrypted disk.
 
-We want to provide a way to unlock a 
-master password via PIN. 
+While apps on Linux can store credentials on the TPM, this is typically
+of limited utility, as they tend not to involve user authentication.
+The situation on other operating systems is different. On iOS, apps can
+easily store credentials in the system store, which users can unlock securely
+using biometrics. For example, on Windows, password managers can securely stash
+a long and complex master password (used to first unlock the password database)
+into a system store, then allowing users to unlock the password database using
+biometric credentials later.
+
+Projects such as credentialsd deal with userspace integration (a generic interface
+for providers and consumers of fido2 passkeys). However, they do not deal with
+secret material residing on a hardware module.
+
+Thus we aim to answer how to provide hardware-backed credentials and trusted user verification
+as reusable system services on Linux, while allowing existing applications and 
+authentication infrastructure to consume those services through standardized interfaces.
+
 
 \paragraph{Proposed Methodology:} 
 \begin{itemize}
-    \item We will evaluate the use of hardware security modules on other mainstream operating systems, and primarily on Windows, the TPM, as it most cleanly maps to a Linux solution.
-    \item We will identify current shortcomings and enumerate some attacks against the out-of-the-box Linux experience
-    \item We will then investigate the authentication facilities on Linux, and determine if a TPM-based solution can fit within the constraints of those facilities, or whether a new userspace API is required.
-    \item We will then investigate the interface provided by modern TPMs, and define an interface between the TPM and a userspace API. Then we will implement both pieces. We deliberately do not attempt to solve every bug in this implementation, and instead plan to produce a proof of concept.
-    \item We will then test the previously enumerated attacks against the new implementation.
+
+We propose to build upon the credentialsd architecture by implementing a new credential
+provider backed by the Trusted Platform Module. Rather than storing passkeys as userspace secrets,
+the provider would direct the TPM to generate keys and sign challenges. The use of these
+credentials can be provided through a local pin, and possibly biometrics.
+
+The TPM standard is vast, and thus, we aim to reverse-engineer, or at least determine to some extent,
+how Windows uses the TPM for its Windows Hello solution. Given these findings, and research into the TPM standard,
+we will interface with the TPM suitable for our purposes.
+
+Further more, credentials require user verification. We will investigate reasonable ways for user credential
+entry, and investigate if there are secure methods available on linux as a secondary goal. Since a trusted operating
+system is a prerequisite for credential entry, we propose to build the TPM solution on top of verified and measured boot, for which
+there is significant prior work. 
+
+We will evaluate this new implementation under a comparison to Windows Hello, and interoperability with existing FIDO
+consumers, unauthorized usage of the private keys, integration
+with the standard linux logon process, and recovery behavior.
+
+
 
 \end{itemize}
 
 \paragraph{Expected Findings:} We hope to document how other mainstream operating
-systems manage user authentication and secrets. We believe that by securing 
-keys in a hardware security module, we will be able to defend against certain attacks
-without drastically impacting the user experience, and unlock a new avenue for user applications
-to store secrets and run-time.
+systems manage user authentication and secrets. We expect that by securing 
+keys in a hardware security module, instead of storing them as userspace secrets,
+we can improve the security of credentials on Linux.
+
+We expect to demonstrate that TPM can provide the primitives to store non-exportable FIDO2 passkeys
+that be used by a credential provider through credentialsd. We expect that the same mechanism can be used
+for Linux logon.
+
+We expect to identify the limits of hardware-backed credential protection, and aim to characterize
+the limits of trusted user verification on Linux. We expect to identify the necessary components
+for a Windows Hello style authentication system, and the areas in which Linux infrastructure is lacking.
 
 
 % Even though Dr. Ghodsi said she would approve this if we 
