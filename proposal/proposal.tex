@@ -78,8 +78,6 @@ authentication infrastructure to consume those services through standardized int
 
 
 \paragraph{Proposed Methodology:} 
-\begin{itemize}
-
 We propose to build upon the credentialsd architecture by implementing a new credential
 provider backed by the Trusted Platform Module. Rather than storing passkeys as userspace secrets,
 the provider would direct the TPM to generate keys and sign challenges. The use of these
@@ -97,10 +95,6 @@ there is significant prior work.
 We will evaluate this new implementation under a comparison to Windows Hello, and interoperability with existing FIDO
 consumers, unauthorized usage of the private keys, integration
 with the standard linux logon process, and recovery behavior.
-
-
-
-\end{itemize}
 
 \paragraph{Expected Findings:} We hope to document how other mainstream operating
 systems manage user authentication and secrets. We expect that by securing 
