@@ -1,0 +1,261 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Template for USENIX papers.
+%
+% History:
+%
+% - TEMPLATE for Usenix papers, specifically to meet requirements of
+%   USENIX '05. originally a template for producing IEEE-format
+%   articles using LaTeX. written by Matthew Ward, CS Department,
+%   Worcester Polytechnic Institute. adapted by David Beazley for his
+%   excellent SWIG paper in Proceedings, Tcl 96. turned into a
+%   smartass generic template by De Clarke, with thanks to both the
+%   above pioneers. Use at your own risk. Complaints to /dev/null.
+%   Make it two column with no page numbering, default is 10 point.
+%
+% - Munged by Fred Douglis <douglis@research.att.com> 10/97 to
+%   separate the .sty file from the LaTeX source template, so that
+%   people can more easily include the .sty file into an existing
+%   document. Also changed to more closely follow the style guidelines
+%   as represented by the Word sample file.
+%
+% - Note that since 2010, USENIX does not require endnotes. If you
+%   want foot of page notes, don't include the endnotes package in the
+%   usepackage command, below.
+% - This version uses the latex2e styles, not the very ancient 2.09
+%   stuff.
+%
+% - Updated July 2018: Text block size changed from 6.5" to 7"
+%
+% - Updated Dec 2018 for ATC'19:
+%
+%   * Revised text to pass HotCRP's auto-formatting check, with
+%     hotcrp.settings.submission_form.body_font_size=10pt, and
+%     hotcrp.settings.submission_form.line_height=12pt
+%
+%   * Switched from \endnote-s to \footnote-s to match Usenix's policy.
+%
+%   * \section* => \begin{abstract} ... \end{abstract}
+%
+%   * Make template self-contained in terms of bibtex entires, to allow
+%     this file to be compiled. (And changing refs style to 'plain'.)
+%
+%   * Make template self-contained in terms of figures, to
+%     allow this file to be compiled. 
+%
+%   * Added packages for hyperref, embedding fonts, and improving
+%     appearance.
+%   
+%   * Removed outdated text.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix2019_v3}
+
+% to be able to draw some self-contained figs
+\usepackage{tikz}
+\usepackage{amsmath}
+
+% inlined bib file
+\usepackage{filecontents}
+
+%-------------------------------------------------------------------------------
+\begin{filecontents}{\jobname.bib}
+%-------------------------------------------------------------------------------
+@Misc{bicakci2026qes,
+  author       = {Bicakci, Kemal and Varli, Fatih Mehmet and Korkmaz, Muhammet Emir and Uzunay, Yusuf},
+  title        = {{QES}-Backed Virtual {FIDO2} Authenticators: Architectural Options for Secure, Synchronizable {WebAuthn} Credentials},
+  year         = {2026},
+  eprint       = {2601.06554},
+  archivePrefix= {arXiv},
+  primaryClass = {cs.CR},
+  note         = {\url{https://arxiv.org/abs/2601.06554}}
+}
+
+@Misc{vaultedpasskeys2026,
+  title        = {Vaulted Passkeys: A Device-Bound Proposal for Authenticated Credential Export and Import},
+  year         = {2026},
+  eprint       = {2608.13806},
+  archivePrefix= {arXiv},
+  note         = {\url{https://arxiv.org/abs/2608.13806}}
+}
+
+@Misc{berladskyy2026fido2attack,
+  author       = {Berladskyy, Alexander and A{\ss}muth, Andreas},
+  title        = {An Analysis of Attack Vectors Against {FIDO2} Authentication},
+  year         = {2026},
+  eprint       = {2604.20826},
+  archivePrefix= {arXiv},
+  note         = {Kiel University of Applied Sciences. \url{https://arxiv.org/abs/2604.20826}}
+}
+
+@Misc{mitra2025verifiablepasskey,
+  author       = {Mitra, Aditya and Sethuraman, Sibi Chakkaravarthy},
+  title        = {Verifiable Passkey: The Decentralized Authentication Standard},
+  year         = {2025},
+  eprint       = {2512.21663},
+  archivePrefix= {arXiv},
+  note         = {\url{https://arxiv.org/abs/2512.21663}}
+}
+
+@InProceedings{tran2025passkeyimpl,
+  author       = {Tran, Lien and Zhang, Boyuan and Pawanja, Ratchanon and Khokhar, Rashid Hussain},
+  title        = {The Passwordless Authentication with Passkey Technology from an Implementation Perspective},
+  booktitle    = {2nd IEEE/ACIS International Conference on Software Engineering, Artificial Intelligence, Networking and Parallel/Distributed Computing (SNPD2025-Summer IV)},
+  year         = {2025},
+  note         = {Preprint: \url{https://arxiv.org/abs/2508.11928}}
+}
+\end{filecontents}
+
+%-------------------------------------------------------------------------------
+\begin{document}
+%-------------------------------------------------------------------------------
+
+%don't want date printed
+\date{}
+
+% make title bold and 14 pt font (Latex default is non-bold, 16 pt)
+\title{\Large \bf Literature Review}
+
+\author{
+    {\rm Aayuman Ghangurde}\\
+    Purdue University
+    \and
+    {\rm Sai Palaparthi}\\
+    Purdue University
+    \and
+    {\rm Rakib Ahsan}\\
+    Purdue University
+    \and
+    {\rm Zeke Ulrich}\\
+    Purdue University
+}
+
+\maketitle
+
+%-------------------------------------------------------------------------------
+\section{Related Work}
+%-------------------------------------------------------------------------------
+
+\subsection{Directly Relevant Papers}
+%-----------------------------------
+
+Storing passkeys (device-bound {WebAuthn}/{FIDO2} private keys) inside a
+{TPM} on Linux sits at the intersection of hardware-rooted key storage,
+credential portability/backup, and the broader passkey ecosystem. The
+five papers below, all published in 2025 or later, are the ones most
+directly relevant to this problem; together they also outline the gap
+that our work aims to fill: none of them implements or evaluates a
+Linux-native {TPM} 2.0 backend that manages {PCR}-policy sealing,
+key-slot capacity, and recoverable export/import for {WebAuthn}
+credentials.
+
+\paragraph{QES-Backed Virtual FIDO2 Authenticators~\cite{bicakci2026qes}.}
+Bicakci et al.\ note that {FIDO2}/{WebAuthn} traditionally relies on
+device-bound cryptographic keys that are not naturally portable across
+user devices, and that current passkey deployments address this by
+synchronizing credentials through platform-specific cloud ecosystems --
+requiring users to trust the corresponding cloud or phone provider with
+their authentication material. As an alternative, they bridge
+qualified-electronic-signature (QES) smart-card/{PKCS\#11} modules,
+which provide high-assurance, hardware-rooted identity but are not
+directly compatible with {WebAuthn}, by wrapping a QES-grade
+{PKCS\#11} key inside a virtual {FIDO2} authenticator and encrypting
+the private key material for cloud synchronization. They implement a
+baseline architecture in which the cloud stores only ciphertext while
+decryption capability stays anchored in the user's hardware token, and
+they design (but do not implement) a hardened, {OPRF}-based variant
+that binds synchronization keys to a local user-verification factor so
+they cannot be repurposed outside {FIDO2} semantics. \textbf{Shortcoming:}
+the hardened variant is analyzed only on paper, and the ``hardware
+token'' in both designs is a QES smart card/{PKCS\#11} module rather
+than a general-purpose {TPM} -- there is no treatment of {TPM}-native
+key hierarchies, {PCR} policies, or the Linux platform stack, which is
+exactly the backend our work targets.
+
+\paragraph{Vaulted Passkeys~\cite{vaultedpasskeys2026}.}
+This paper starts from the observation that hardware authenticators
+deliberately resist private-key extraction, yet replacement, disaster
+recovery, and controlled migration create a legitimate need for
+credential portability. Existing guidance (registering a second
+authenticator in advance) is redundancy rather than a true backup of
+the original credential. The authors propose \emph{Vaulted Passkeys}, a
+device-bound architecture that exports protected credential state while
+the source authenticator is still available and restores it to
+hardware acquired later, without cloning a full authenticator or
+exposing plaintext private keys to routine desktop software; a random
+256-bit vault key protects authenticated credential envelopes through
+{HKDF}-separated keys and four explicit {AEAD} profiles.
+\textbf{Shortcoming:} the design is authenticator-agnostic and does not
+engage with the specifics of {TPM} 2.0 (e.g., sealing envelopes to
+{PCR} state, using the {TPM}'s own key-wrapping hierarchy instead of an
+external vault key), so it does not show how such export/import would
+actually be realized -- or how safe it would be -- for a {TPM}-backed
+Linux passkey store.
+
+\paragraph{An Analysis of Attack Vectors Against FIDO2
+Authentication~\cite{berladskyy2026fido2attack}.}
+Motivated by the continued prevalence of phishing (the Anti-Phishing
+Working Group reported over 890{,}000 attacks in Q3 2025 alone),
+Berladskyy and A{\ss}muth examine passkeys/{FIDO2}, where a private key
+is stored on the user's authenticator device and the server holds only
+the corresponding public key; authentication happens locally on the
+device (e.g., via fingerprint or {PIN}) rather than through server-side
+hash comparison, and attestation lets a relying party cryptographically
+verify that a key was generated by a specific authenticator, such as a
+hardware security key. \textbf{Shortcoming:} the analysis treats the
+authenticator largely as a black box and focuses on protocol- and
+phishing-level attack vectors; it does not analyze platform-specific
+weaknesses of a particular secure element (e.g., misconfigured {PCR}
+policies or {TPM} sealing on Linux), leaving open exactly the kind of
+implementation-level threat model our work needs to address.
+
+\paragraph{Verifiable Passkey~\cite{mitra2025verifiablepasskey}.}
+Mitra and Sethuraman point out that secure storage modules such as a
+{TPM} or a physical security key have limited storage space, which
+caps the number of passkeys a user can register -- for example, a
+Yubikey~5 with older firmware stores only 25 passkeys, while newer
+firmware allows up to 100 -- and that the common workaround, federated
+single sign-on, creates a privacy risk because the identity provider
+can track a user across the services it authenticates them to. They
+propose \emph{Verifiable Passkey}, a standard that lets a user reuse a
+single passkey created for a Verifiable-Credential issuer across
+platforms without exposing that cross-service tracking surface.
+\textbf{Shortcoming:} this is the one paper in our set that names {TPM}
+storage-capacity limits explicitly as a motivating problem, but its fix
+works around the constraint at the credential-issuer/protocol layer
+rather than addressing efficient, scalable on-{TPM} key storage itself
+-- e.g., through key derivation or wrapping schemes that let many
+credentials share a small number of resident {TPM} key slots, which is
+the angle our work takes.
+
+\paragraph{The Passwordless Authentication with Passkey Technology from
+an Implementation Perspective~\cite{tran2025passkeyimpl}.}
+Tran et al.\ highlight the key techniques involved in implementing a
+passkey-based authentication system and the considerations needed when
+integrating its components during system development, so that users
+can securely access their accounts with minimal complexity while the
+system still balances security, usability, and performance; they
+compare passkeys against {TOTP} and evaluate both mechanisms'
+feasibility in real-world deployments. \textbf{Shortcoming:} the paper
+is written from an application/backend-integration perspective (rate
+limiting, {OAuth2}, two-factor flows) rather than the client-side
+secure-storage layer, and it does not discuss how private key material
+is actually sealed to platform hardware such as a {TPM} or Secure
+Enclave -- precisely the layer our work is concerned with.
+
+\subsection{Last Paper (Not Directly Relevant) -- Need Ten}
+%-----------------------------------
+
+Citation: ~\cite{waldspurger02}.
+
+%-------------------------------------------------------------------------------
+\bibliographystyle{plain}
+\bibliography{\jobname}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%  LocalWords:  endnotes includegraphics fread ptr nobj noindent
+%%  LocalWords:  pdflatex acks
