@@ -140,16 +140,6 @@
 \subsection{Directly Relevant Papers}
 %-----------------------------------
 
-Storing passkeys (device-bound {WebAuthn}/{FIDO2} private keys) inside a
-{TPM} on Linux sits at the intersection of hardware-rooted key storage,
-credential portability/backup, and the broader passkey ecosystem. The
-five papers below, all published in 2025 or later, are the ones most
-directly relevant to this problem; together they also outline the gap
-that our work aims to fill: none of them implements or evaluates a
-Linux-native {TPM} 2.0 backend that manages {PCR}-policy sealing,
-key-slot capacity, and recoverable export/import for {WebAuthn}
-credentials.
-
 \paragraph{QES-Backed Virtual FIDO2 Authenticators~\cite{bicakci2026qes}.}
 Bicakci et al.\ note that {FIDO2}/{WebAuthn} traditionally relies on
 device-bound cryptographic keys that are not naturally portable across
@@ -244,10 +234,8 @@ secure-storage layer, and it does not discuss how private key material
 is actually sealed to platform hardware such as a {TPM} or Secure
 Enclave -- precisely the layer our work is concerned with.
 
-\subsection{Last Paper (Not Directly Relevant) -- Need Ten}
+\subsection{Need Ten More}
 %-----------------------------------
-
-Citation: ~\cite{waldspurger02}.
 
 %-------------------------------------------------------------------------------
 \bibliographystyle{plain}
