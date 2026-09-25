@@ -1,54 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Template for USENIX papers.
-%
-% History:
-%
-% - TEMPLATE for Usenix papers, specifically to meet requirements of
-%   USENIX '05. originally a template for producing IEEE-format
-%   articles using LaTeX. written by Matthew Ward, CS Department,
-%   Worcester Polytechnic Institute. adapted by David Beazley for his
-%   excellent SWIG paper in Proceedings, Tcl 96. turned into a
-%   smartass generic template by De Clarke, with thanks to both the
-%   above pioneers. Use at your own risk. Complaints to /dev/null.
-%   Make it two column with no page numbering, default is 10 point.
-%
-% - Munged by Fred Douglis <douglis@research.att.com> 10/97 to
-%   separate the .sty file from the LaTeX source template, so that
-%   people can more easily include the .sty file into an existing
-%   document. Also changed to more closely follow the style guidelines
-%   as represented by the Word sample file.
-%
-% - Note that since 2010, USENIX does not require endnotes. If you
-%   want foot of page notes, don't include the endnotes package in the
-%   usepackage command, below.
-% - This version uses the latex2e styles, not the very ancient 2.09
-%   stuff.
-%
-% - Updated July 2018: Text block size changed from 6.5" to 7"
-%
-% - Updated Dec 2018 for ATC'19:
-%
-%   * Revised text to pass HotCRP's auto-formatting check, with
-%     hotcrp.settings.submission_form.body_font_size=10pt, and
-%     hotcrp.settings.submission_form.line_height=12pt
-%
-%   * Switched from \endnote-s to \footnote-s to match Usenix's policy.
-%
-%   * \section* => \begin{abstract} ... \end{abstract}
-%
-%   * Make template self-contained in terms of bibtex entires, to allow
-%     this file to be compiled. (And changing refs style to 'plain'.)
-%
-%   * Make template self-contained in terms of figures, to
-%     allow this file to be compiled. 
-%
-%   * Added packages for hyperref, embedding fonts, and improving
-%     appearance.
-%   
-%   * Removed outdated text.
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \documentclass[letterpaper,twocolumn,10pt]{article}
 \usepackage{usenix2019_v3}
 
@@ -62,48 +11,55 @@
 %-------------------------------------------------------------------------------
 \begin{filecontents}{\jobname.bib}
 %-------------------------------------------------------------------------------
-@Misc{bicakci2026qes,
-  author       = {Bicakci, Kemal and Varli, Fatih Mehmet and Korkmaz, Muhammet Emir and Uzunay, Yusuf},
-  title        = {{QES}-Backed Virtual {FIDO2} Authenticators: Architectural Options for Secure, Synchronizable {WebAuthn} Credentials},
+@InProceedings{jannett2026stateofpasskeys,
+  author       = {Jannett, Louis and Mayer, Andreas and Westers, Maximilian and Mladenov, Vladislav and Mainka, Christian and Schwenk, J{\"o}rg},
+  title        = {The State of Passkeys: Studying the Adoption and Security of Passkeys on the Web},
+  booktitle    = {35th USENIX Security Symposium (USENIX Security 26)},
   year         = {2026},
-  eprint       = {2601.06554},
+  isbn         = {978-1-939133-58-8},
+  address      = {Baltimore, MD},
+  pages        = {5039--5058},
+  url          = {https://www.usenix.org/conference/usenixsecurity26/presentation/jannett},
+  publisher    = {USENIX Association},
+  month        = aug
+}
+
+@InProceedings{bindel2023fido2ctap21webauthn2,
+  author       = {Bindel, Nina and Cremers, Cas and Zhao, Mang},
+  title        = {{FIDO2}, {CTAP} 2.1, and {WebAuthn} 2: Provable Security and Post-Quantum Instantiation},
+  booktitle    = {2023 IEEE Symposium on Security and Privacy (SP)},
+  year         = {2023},
+  pages        = {1471--1490},
+  publisher    = {IEEE},
+  doi          = {10.1109/SP46215.2023.10179454},
+  url          = {https://doi.org/10.1109/SP46215.2023.10179454},
+  note         = {Also available as Cryptology ePrint Archive, Paper 2022/1029: \url{https://eprint.iacr.org/2022/1029}}
+}
+
+@Misc{culnane2021virtualctap2webauthn,
+  author       = {Culnane, Chris and Newton, Christopher J. P. and Treharne, Helen},
+  title        = {Technical Report on a Virtual {CTAP2} {WebAuthn} Authenticator},
+  year         = {2021},
+  eprint       = {2108.04131},
   archivePrefix= {arXiv},
   primaryClass = {cs.CR},
-  note         = {\url{https://arxiv.org/abs/2601.06554}}
+  url          = {https://arxiv.org/abs/2108.04131},
+  note         = {28 pages, 3 figures, Open Source code repository: \url{https://github.com/UoS-SCCS/VirtualWebAuthn}}
 }
 
-@Misc{vaultedpasskeys2026,
-  title        = {Vaulted Passkeys: A Device-Bound Proposal for Authenticated Credential Export and Import},
-  year         = {2026},
-  eprint       = {2608.13806},
-  archivePrefix= {arXiv},
-  note         = {\url{https://arxiv.org/abs/2608.13806}}
-}
-
-@Misc{berladskyy2026fido2attack,
-  author       = {Berladskyy, Alexander and A{\ss}muth, Andreas},
-  title        = {An Analysis of Attack Vectors Against {FIDO2} Authentication},
-  year         = {2026},
-  eprint       = {2604.20826},
-  archivePrefix= {arXiv},
-  note         = {Kiel University of Applied Sciences. \url{https://arxiv.org/abs/2604.20826}}
-}
-
-@Misc{mitra2025verifiablepasskey,
-  author       = {Mitra, Aditya and Sethuraman, Sibi Chakkaravarthy},
-  title        = {Verifiable Passkey: The Decentralized Authentication Standard},
-  year         = {2025},
-  eprint       = {2512.21663},
-  archivePrefix= {arXiv},
-  note         = {\url{https://arxiv.org/abs/2512.21663}}
-}
-
-@InProceedings{tran2025passkeyimpl,
-  author       = {Tran, Lien and Zhang, Boyuan and Pawanja, Ratchanon and Khokhar, Rashid Hussain},
-  title        = {The Passwordless Authentication with Passkey Technology from an Implementation Perspective},
-  booktitle    = {2nd IEEE/ACIS International Conference on Software Engineering, Artificial Intelligence, Networking and Parallel/Distributed Computing (SNPD2025-Summer IV)},
-  year         = {2025},
-  note         = {Preprint: \url{https://arxiv.org/abs/2508.11928}}
+@InProceedings{wan2022crystalskyberaaccelerator,
+  author       = {Wan, Lipeng and Zheng, Fangyu and Fan, Guang and Wei, Rong and Gao, Lili and Dong, Jiankuo and Wang, Yuewu and Lin, Jingqiang},
+  title        = {A Novel High-Performance Implementation of {CRYSTALS-Kyber} with {AI} Accelerator},
+  booktitle    = {Computer Security -- {ESORICS} 2022: 27th European Symposium on Research in Computer Security, Copenhagen, Denmark, September 26--30, 2022, Proceedings, Part {III}},
+  year         = {2022},
+  editor       = {Atluri, Vijayalakshmi and Di Pietro, Roberto and Jensen, Christian D. and Meng, Weizhi},
+  volume       = {13556},
+  series       = {Lecture Notes in Computer Science},
+  pages        = {514--534},
+  publisher    = {Springer Cham},
+  doi          = {10.1007/978-3-031-17143-7_25},
+  url          = {https://doi.org/10.1007/978-3-031-17143-7_25},
+  isbn         = {978-3-031-17143-7}
 }
 \end{filecontents}
 
@@ -138,7 +94,7 @@
 %-------------------------------------------------------------------------------
 
 
-\subsection{Technical Report on a Virtual CTAP2 WebAuthn Authenticator}
+\subsection{Technical Report on a Virtual CTAP2 WebAuthn Authenticator~\cite{culnane2021virtualctap2webauthn}}
 
 \paragraph{Summary:}
 This technical report covers the development of the associated open source
@@ -167,7 +123,7 @@ This project wants several improvements we hope to make, including:
 \end{itemize}
 
 
-\subsection{A Novel High-Performance Implementation of CRYSTALS-Kyber with AI Accelerator}
+\subsection{A Novel High-Performance Implementation of CRYSTALS-Kyber with AI Accelerator~\cite{wan2022crystalskyberaaccelerator}}
 
 \paragraph{Summary:}
 The authors implement a version of CRYSTALS-Kyber on 
@@ -188,7 +144,7 @@ or other AI accelerators
 contribution as a general framework for AI-accelerator-based cryptography.
 
 
-\subsection{The State of Passkeys: Studying the Adoption and Security of Passkeys on the Web}
+\subsection{The State of Passkeys: Studying the Adoption and Security of Passkeys on the Web~\cite{jannett2026stateofpasskeys}}
 
 \paragraph{Summary:} The authors perform a comprehensive
 security evaluation of passkey implementation in websites.
@@ -217,7 +173,7 @@ several limitations of their approach, including:
         share a common authentication backend.
 \end{itemize}
 
-\subsection{FIDO2, CTAP 2.1, and WebAuthn 2: Provable Security and Post-Quantum Instantiation}
+\subsection{FIDO2, CTAP 2.1, and WebAuthn 2: Provable Security and Post-Quantum Instantiation~\cite{bindel2023fido2ctap21webauthn2}}
 
 \paragraph{Summary:} The authors formally
 analyze FIDO2's security with the
