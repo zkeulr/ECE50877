@@ -118,17 +118,17 @@
 \title{\Large \bf Literature Review}
 
 \author{
-    {\rm Aayuman Ghangurde}\\
-    Purdue University
-    \and
-    {\rm Sai Palaparthi}\\
-    Purdue University
-    \and
-    {\rm Rakib Ahsan}\\
-    Purdue University
-    \and
-    {\rm Zeke Ulrich}\\
-    Purdue University
+  {\rm Aayuman Ghangurde}\\
+  Purdue University
+  \and
+  {\rm Sai Palaparthi}\\
+  Purdue University
+  \and
+  {\rm Rakib Ahsan}\\
+  Purdue University
+  \and
+  {\rm Zeke Ulrich}\\
+  Purdue University
 }
 
 \maketitle
@@ -137,21 +137,104 @@
 \section{Related Work}
 %-------------------------------------------------------------------------------
 
-For this project deliverable you will conduct a literature review (related work) on the determined direction. The
-literature review should include relevant research papers from older and more recent venues. For each paper,
-briefly describe what they do, if there are any shortcomings (which ideally your work plans to address), and cite
-them. A good literature review is not just listing a bunch of papers, instead, it contextualizes the existing work
-and how your project idea fits within them. The related work section should be at least one page (no more than two
-pages) long excluding the references, and discuss at least 15 papers with 5 papers directly related to the project
-direction you are proposing with more detailed discussions
-
-\subsection{The State of Passkeys: Studying the Adoption and Security of Passkeys on the Web}
-
-\subsection{FIDO2, CTAP 2.1, and WebAuthn 2: Provable Security and Post-Quantum Instantiation}
 
 \subsection{Technical Report on a Virtual CTAP2 WebAuthn Authenticator}
 
+\paragraph{Summary:}
+This technical report covers the development of the associated open source
+Virtual CTAP2 WebAuthn authenticator. In addition to
+a software only authenticator it also provides a proof of concept implementation
+of a Trusted Platform Module (TPM) based authenticator, with associated
+interfaces and libraries for using a TPM as the underlying credential store.
+
+\paragraph{Shortcomings:}
+This project wants several improvements we hope to make, including:
+\begin{itemize}
+  \item the authors deliberately keep client-PIN verification outside
+        the TPM (software ES256 provider), reasoning that the PIN is typed
+        anyway so it "doesn't warrant" TPM protection. This is a waste of
+        modern TPMs' built-in dictionary-attack prevention, which we can enable.
+  \item their authenticator uses a flat key hierarchy with no dictionary-attack
+        protection on the intermediate key. If we use passkey signing keys
+        as children of an intermediate PIN key that has a lockout policy,
+        then unlocking the PIN key makes them usable just as with Windows
+        Hello and we have brute force protection against the PIN.
+  \item the paper notes that their method of emulating a USB HID device
+        is fragile. We can build the authenticator as a PAM module for
+        extensibility.
+  \item the authenticator suuports only ES256, which we could expand to
+        RSA and Ed25519.
+\end{itemize}
+
+
 \subsection{A Novel High-Performance Implementation of CRYSTALS-Kyber with AI Accelerator}
+
+\paragraph{Summary:}
+The authors implement a version of CRYSTALS-Kyber on 
+the NVIDIA AI accelerator Tensor Core to to accelerate 
+the polynomial multiplication phase and achieve considerable 
+performance improvement, which they believe can generalize 
+to other more lattice-based cryptographic schemes, and 
+eventually homomorphic encryption.
+
+\paragraph{Shortcomings:}
+The generality of the proposed framework for 
+module lattice based cryptography broadly is 
+asserted but unsubstantiated.
+Additionally, the esults come from a single RTX 3080 with Ampere
+and there's no testing across other Tensor Core generations 
+or other AI accelerators 
+(TPU, Apple Neural Engine, NPUs), despite the paper claiming its 
+contribution as a general framework for AI-accelerator-based cryptography.
+
+
+\subsection{The State of Passkeys: Studying the Adoption and Security of Passkeys on the Web}
+
+\paragraph{Summary:} The authors perform a comprehensive
+security evaluation of passkey implementation in websites.
+The authors identify lack of standardization and serious
+security issues in a majority of websites, including use
+of deprecated cryptographic algorithms and critical or
+high CVSS scores. The authors present
+\texttt{PASSKEYS-RADAR} for tracking deployment of
+passkeys on the web, and \texttt{PASSKEYS-ATTACKER} for
+exploting security vulnerabilities on insecure sites.
+
+\paragraph{Shortcomings:} The authors acknowledge
+several limitations of their approach, including:
+\begin{itemize}
+  \item \emph{Overestimation of adoption rate}: the automated detec-
+        tion of passkey-enabled websites inevitably produces false
+        positives, which leads to an overestimation of the adoption.
+  \item \emph{Limited representativeness of the dataset}: the
+        dataset is is biased toward publicly accessible, consumer-
+        facing services. Certain sectors, such as online banking, could
+        not be systematically evaluated due to the lack of suitable test
+        accounts.
+  \item \emph{Different authentication backends}: It is not possible to
+        automatically determine whether multiple domains operated
+        by the same provider (e.g., gmail.com and youtube.com)
+        share a common authentication backend.
+\end{itemize}
+
+\subsection{FIDO2, CTAP 2.1, and WebAuthn 2: Provable Security and Post-Quantum Instantiation}
+
+\paragraph{Summary:} The authors formally
+analyze FIDO2's security with the
+CTAP 2.1 and WebAuthn 2 sub-protocols.
+The authors prove post-quantum security for
+FIDO2 under certain conditions and minor protocol extensions,
+and show a simple improvement for the downgrade
+resilience of FIDO2.
+
+\paragraph{Shortcomings:}
+Since the paper is an abstract proof of
+CTAP and WebAuthn, the authors
+do not model some of the new CTAP 2.1 features for enterprise
+customers, and do not make formal statements about the
+unlinkability of credentials or other detailed privacy statements.
+Thus, the implementation of these standards may have
+unaddressed vulnerabilities.
 
 
 
