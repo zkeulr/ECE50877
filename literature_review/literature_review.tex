@@ -41,50 +41,41 @@
 
 \subsection{Technical Report on a Virtual CTAP2 WebAuthn Authenticator~\cite{culnane2021virtualctap2webauthn}}
 
-\paragraph{Summary:}
 This technical report covers the development of the associated open source
 Virtual CTAP2 WebAuthn authenticator. In addition to
 a software only authenticator it also provides a proof of concept implementation
 of a Trusted Platform Module (TPM) based authenticator, with associated
 interfaces and libraries for using a TPM as the underlying credential store.
-
-\paragraph{Shortcomings:}
-This project wants several improvements we hope to make, including:
-\begin{itemize}
-  \item the authors deliberately keep client-PIN verification outside
-        the TPM (software ES256 provider), reasoning that the PIN is typed
-        anyway so it "doesn't warrant" TPM protection. This is a waste of
-        modern TPMs' built-in dictionary-attack prevention, which we can enable.
-  \item their authenticator uses a flat key hierarchy with no dictionary-attack
-        protection on the intermediate key. If we use passkey signing keys
-        as children of an intermediate PIN key that has a lockout policy,
-        then unlocking the PIN key makes them usable just as with Windows
-        Hello and we have brute force protection against the PIN.
-  \item the paper notes that their method of emulating a USB HID device
-        is fragile. We can build the authenticator as a PAM module for
-        extensibility.
-  \item the authenticator suuports only ES256, which we could expand to
-        RSA and Ed25519.
-\end{itemize}
+This project wants several improvements we hope to make.
+First, the authors deliberately keep client-PIN verification outside
+the TPM, reasoning that the PIN is typed
+anyway so it "doesn't warrant" TPM protection. This is a waste of
+modern TPMs' built-in dictionary-attack prevention, which we can enable.
+Second, their authenticator uses a flat key hierarchy with no dictionary-attack
+protection on the intermediate key. If we use passkey signing keys
+as children of an intermediate PIN key that has a lockout policy,
+then unlocking the PIN key makes them usable just as with Windows
+Hello and we have brute force protection against the PIN.
+Third, the paper notes that their method of emulating a USB HID device
+is fragile. We can build the authenticator as a PAM module for
+extensibility.
+Finally, the authenticator suuports only ES256, which we could expand to
+RSA and Ed25519.
 
 \subsection{Securing FIDO2 Credentials Using Intel SGX~\cite{matos2026securing}}
-
-\paragraph{Summary:}
-This paper builds a centralized, replicated FIDO2 
-credential manager similar to the one we're building, 
+This paper builds a centralized, replicated FIDO2
+credential manager similar to the one we're building,
 using /dev/uhid to emulate a USB HID FIDO2 device like
 tpm-fido/VirtualWebAuthn does.
-
-\paragraph{Shortcomings:}
-Their conclusion states they want to 
-"improve the Authenticator Emulator to use a local vault 
+Their conclusion states they want to
+"improve the Authenticator Emulator to use a local vault
 (e.g., TPM-based) to store a UID protected by a secret
-or biometrics." In fact, Intel has discontinued SGX
-so the credential manager must be migrated to a TPM anyway. 
+or biometrics" just as we're doing. In fact, Intel has
+discontinued SGX
+so the credential manager must be migrated to a TPM anyway.
 
 \subsection{The State of Passkeys: Studying the Adoption and Security of Passkeys on the Web~\cite{jannett2026stateofpasskeys}}
-
-\paragraph{Summary:} The authors perform a comprehensive
+The authors perform a comprehensive
 security evaluation of passkey implementation in websites.
 The authors identify lack of standardization and serious
 security issues in a majority of websites, including use
@@ -94,34 +85,15 @@ high CVSS scores. The authors present
 passkeys on the web, and \texttt{PASSKEYS-ATTACKER} for
 exploting security vulnerabilities on insecure sites.
 
-\paragraph{Shortcomings:} The authors acknowledge
-several limitations of their approach, including:
-\begin{itemize}
-  \item \emph{Overestimation of adoption rate}: the automated detec-
-        tion of passkey-enabled websites inevitably produces false
-        positives, which leads to an overestimation of the adoption.
-  \item \emph{Limited representativeness of the dataset}: the
-        dataset is is biased toward publicly accessible, consumer-
-        facing services. Certain sectors, such as online banking, could
-        not be systematically evaluated due to the lack of suitable test
-        accounts.
-  \item \emph{Different authentication backends}: It is not possible to
-        automatically determine whether multiple domains operated
-        by the same provider (e.g., gmail.com and youtube.com)
-        share a common authentication backend.
-\end{itemize}
-
 \subsection{FIDO2, CTAP 2.1, and WebAuthn 2: Provable Security and Post-Quantum Instantiation~\cite{bindel2023fido2ctap21webauthn2}}
 
-\paragraph{Summary:} The authors formally
+The authors formally
 analyze FIDO2's security with the
 CTAP 2.1 and WebAuthn 2 sub-protocols.
 The authors prove post-quantum security for
 FIDO2 under certain conditions and minor protocol extensions,
 and show a simple improvement for the downgrade
 resilience of FIDO2.
-
-\paragraph{Shortcomings:}
 Since the paper is an abstract proof of
 CTAP and WebAuthn, the authors
 do not model some of the new CTAP 2.1 features for enterprise
