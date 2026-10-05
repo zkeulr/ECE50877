@@ -1,7 +1,5 @@
 \documentclass[letterpaper,twocolumn,10pt]{article}
 \usepackage{usenix2019_v3}
-
-% to be able to draw some self-contained figs
 \usepackage{tikz}
 \usepackage{amsmath}
 
@@ -38,7 +36,6 @@
 \section{Related Work}
 %-------------------------------------------------------------------------------
 
-
 \subsection{Technical Report on a Virtual CTAP2 WebAuthn Authenticator~\cite{culnane2021virtualctap2webauthn}}
 
 This technical report covers the development of the associated open source
@@ -74,8 +71,76 @@ or biometrics" just as we're doing. In fact, Intel has
 discontinued SGX
 so the credential manager must be migrated to a TPM anyway.
 
-\subsection{The State of Passkeys: Studying the Adoption and Security of Passkeys on the Web~\cite{jannett2026stateofpasskeys}}
-The authors perform a comprehensive
+
+
+\subsection{Formal Analysis of the TPM and FIDO}
+
+The Fast IDentity Online (FIDO) framework consists of two specifications: 
+Universal Authentication Framework (UAF) and Universal 2nd Factor (U2F). For this project,
+we will be focusing on using UAF as a way to log into a Linux system with a TPM acting like the
+FIDO authenticator. According to Haonan Feng et al. \cite{9930658}, the base standard for UAF is defined with an extremely strong security model,
+to the point of being impractical, so most implementations do not follow the standard strictly.
+
+    When analyzed under a more realistic scenario, there are some practically viable 
+vulnerabilities in the protocol that can be exploited. One example of such an 
+attack is a transaction tampering attack \cite{9930658}, which the paper did not provide a 
+solution to. However, according to Shao et al. \cite{https://doi.org/10.1049/iet-ifs.2016.0005}, the TPM supports using HMAC to encrypt and validate communication between 
+itself and the CPU which could be a viable 
+solution to this particular type of attack. Analysis of the security of the HMAC authorization
+mechanism in the paper reveals that the implementation is sufficiently secure under most 
+conditions \cite{https://doi.org/10.1049/iet-ifs.2016.0005} and therefore gives us a base for 
+designing our threat model. 
+
+    In another study by Bindel, et. al ~\cite{bindel2023fido2ctap21webauthn2}
+the authors formally analyze FIDO2's security with the CTAP 2.1 and WebAuthn 2 sub-protocols. The authors prove post-quantum security for
+FIDO2 under certain conditions and minor protocol extensions, and show a simple improvement for the downgrade resilience of FIDO2.
+Since the paper is an abstract proof of
+CTAP and WebAuthn, the authors do not model some of the new CTAP 2.1 features for enterprise
+customers, and do not make formal statements about the unlinkability of credentials or other detailed privacy statements.
+Thus, the implementation of these standards may have unaddressed vulnerabilities.
+
+% The paper explains how 
+% UAF works and some of the weaknesses it has. They also list 
+% some theoretical and practical attacks on the protocol that break confidentiality or 
+% authentication in the registration of a new key or authenticating with an existing key. This paper 
+% is a great reference for some of the issues that we need to keep in mind when designing a threat 
+% model for this project. It also gives us a good understanding about how passkeys are created, 
+% stored, and used for when we make our own passkey implementation.
+
+% The paper introduces the various mechanisms through which the TPM runs HMAC authorization 
+% and encryption, while going through a detailed step-by-step guide on what goes on inside the TPM 
+% as this occurs. The authors also walk through some theoretical attack scenarios for this process,
+% along with some tips on how to counter them. The main use case for HMAC authorization using the 
+% TPM is to encrypt and validate traffic between the CPU and TPM to avoid bus snooping, which is an 
+% important attack vector to have covered when we are trusting it to perform sensitive 
+% authentication. In addition, this paper is a great reference for learning how to send commands to 
+% the TPM through the TPM2.0 API, which can be helpful to us when performing our own analysis.
+
+\subsection{TPM-Attest: Hardware-Rooted Integrity Attestation as a Kernel-Level Anti-Cheat Alternative for Linux \cite{gedela2026tpmattesthardwarerootedintegrityattestation}}
+
+While the main focus of this paper is leveraging hardware backed boot verification as an anti-cheat
+for video games on Linux, the concepts discussed can be applied to any traditional secure boot 
+setup because both of these applications have the same goal: To stop unauthorized and unverified
+code from executing at boot. This paper proposes using the Linux Integrity Measurement 
+Architecture (IMA) alongside the TPM to gather all the information needed to validate the kernel
+that is currently running. One thing this paper fails to include is being able to stop the kernel if an error is detected in integrity measurement, or ideally, a self-healing procedure if 
+integrity is compromised. While we can use this as a base for verified boot, we would have to 
+combine this idea with something like dm-verity in Linux to make this a complete solution.
+
+
+\subsection{Attacks against FIDO authenticators}
+
+Windows Hello is Microsoft's implementation of the Fast IDentity Online (FIDO) protocol. Kim et. al ~\cite{https://doi.org/10.1155/2021/6245306}  and Lee et. al ~\cite{11391923}
+analyze the architecture of Windows Hello. Lee et. al model an adversary that only has temporary but physical access to the device under malicious (theft) or otherwise benign (repair) conditions. Firstly, Windows 11's transition to TPM is lazy - that is, though required by the OS, the TPM may not actually be utilized to store secrets, which may violate application assumptions allow credential extraction. In addition, biometrics, even with a secure transport layer with the biometric chip, are shown to be vulnerable when the biometric details are stored without proper authentication codes. Kim et al. discuss the architecture of signing onto Windows, especially with online Microsoft-linked accounts, detailing the key derivations and decryption steps from PIN to decryption of user secrets in Windows. Kim et al. specifically do not consider the TPM, and one of their key attacks centers around brute-forcing the user's PIN.
+
+Trust Dies in Darkness ~\cite{shakevsky2022trust} by Shakevsky et. al details the architecture of Samsung's TrustZone Keymaster. Samsung implements a two-pronged solution in which a secure world and a normal world are kept separate by a secure monitor. The authors discovered certain devices were vulnerable to downgrade attacks. The possibility of a downgrade attack should be modeled and addressed in any implementation. In the TrustZone architecture, each key blob stored in KeyMaster was derived from hardware-bound master key salted by the application identifiers and other constants using AES-GCM. The hardware security module was controlled by the secure world. However, an endpoint was incorrectly exposed to the normal world which allowed access to encryption with the master-key AES-GCM cipher, while also allowing specifying the IV (the salt). Thus, an IV reuse attack could be used, breaking the AES-GCM cipher. This could then allow FIDO passkeys to be copied from the secure chip. We learn from this paper that access to the TPM should be carefully exposed and well-guarded.
+
+\subsection{Adoption, Implementation and Usage of Passkeys}
+
+Farke et. al ~\cite{281252} is an early study (relative to passkeys) from 2021 that investigates the deployment in a small business, and employees' sentiments on the adoption of Biometric and PIN-based authentication. Windows Hello for Business was used as the platform. It finds that users prefer the shorter PIN's, and the overall experience (including biometrics) was perceived as quicker. The participants in the study expressed some doubts that biometric data could leave the machine. One of the key findings of this early study was that Windows Hello passkeys were resident (bound) to the device - they could not roam like physical keys - and were thus unsuitable for shared computers. Reittinger and Pernul ~\cite{11573563} publish a more modern 2026 study, in a diverse passkey environment as implementations evolved over time. They investigate the challenges in adoption and use of passkeys, finding that users still perceive
+passkeys superior to passwords. Reittinger and Pernul recommend a dedicated passkey management UI and clarity in where passkeys are stored (e.g. cloud-backed v.s bound to device)
+
+In The State of Passkeys: Studying the Adoption and Security of Passkeys on the Web ~\cite{jannett2026stateofpasskeys} the authors perform a comprehensive
 security evaluation of passkey implementation in websites.
 The authors identify lack of standardization and serious
 security issues in a majority of websites, including use
@@ -85,24 +150,17 @@ high CVSS scores. The authors present
 passkeys on the web, and \texttt{PASSKEYS-ATTACKER} for
 exploting security vulnerabilities on insecure sites.
 
-\subsection{FIDO2, CTAP 2.1, and WebAuthn 2: Provable Security and Post-Quantum Instantiation~\cite{bindel2023fido2ctap21webauthn2}}
-
-The authors formally
-analyze FIDO2's security with the
-CTAP 2.1 and WebAuthn 2 sub-protocols.
-The authors prove post-quantum security for
-FIDO2 under certain conditions and minor protocol extensions,
-and show a simple improvement for the downgrade
-resilience of FIDO2.
-Since the paper is an abstract proof of
-CTAP and WebAuthn, the authors
-do not model some of the new CTAP 2.1 features for enterprise
-customers, and do not make formal statements about the
-unlinkability of credentials or other detailed privacy statements.
-Thus, the implementation of these standards may have
-unaddressed vulnerabilities.
+Though these studies are relatively diverse, they have a recurring theme: transparency. In the one case, Windows Hello technology
+can choose to not use TPM-backed security without indication. In the other, whether passkeys are synchronized to the cloud or local-only
+is confusing. We must consider a design that is explicit about the capabilities of the passkeys it stores, and furthermore, can denote it
+remains on a older security standard should future security protocols become standardized. Finally, we note that users, generally, have positive sentiments towards passkeys, both in PIN and biometric forms, as well as in actual use: continuing to bring better passkey support
+to Linux is not a fruitless endeavour.
 
 
+\subsection{TPM in Verified/Measured Boot}
+Arbaugh et al. first introduced the "chain of trust" idea for booting a computer \cite{arbaugh1997secure}. Their core argument was to securely verify the integrity of the next layer before handing over control, and code execution halts with a recovery mechanism in case of an integrity check failure. This has evolved into modern-day Secure/Verified Boot. While Secure Boot blocks the execution of an untrusted layer, Sailer et al. proposed an alternative: measuring every loading step from boot loader to application layer inside TPM-protected logs, so that it can be verified later through TPM-backed attestation. This is known as Measured/Trusted Boot \cite{sailer2004design}. Parno et al. \cite{parno2010bootstrapping} draw a contrast between these two schemes and discuss how Trusted Computing is put to practical use, such as sealing secrets in a trusted boot state, like in BitLocker, as well as letting a verifier remotely check a device's log through TPM attestation.
+
+A recent use case was introduced by Woltjen et al. on the Raspberry Pi \cite{woltjen2026trustworthy}. They identified that the Raspberry Pi has only the capability for Secure Boot, but not Measured Boot due to the absence of TPM driver support. The authors addressed this limitation by integrating U-Boot into the Raspberry Pi to connect with TPM 2.0, and thus combining both Secure and Measured Boot to enable Remote Attestation on the platform.
 
 %-------------------------------------------------------------------------------
 \bibliographystyle{plain}
